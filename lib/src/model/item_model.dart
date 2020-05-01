@@ -4,13 +4,13 @@ class ItemModel {
   int _total_pages;
   List<_Result> _results = [];
 
-  ItemModel.fromJson(Map<String, dynamic> parsedJson){
+  ItemModel.fromJson(Map<String, dynamic> parsedJson) {
     _page = parsedJson['page'];
     _total_results = parsedJson['total_results'];
     _total_pages = parsedJson['total_pages'];
     List<_Result> temp = [];
-    for (_Result item in parsedJson['results']){
-      _Result _result = _Result(item);
+    for (int i = 0; i < parsedJson['results'].length; i++) {
+      _Result _result = _Result(parsedJson['results'][i]);
       temp.add(_result);
     }
     _results = temp;
