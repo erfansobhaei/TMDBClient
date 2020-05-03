@@ -4,10 +4,21 @@ import 'package:tmdbclient/src/bloc/movie_bloc.dart';
 import 'package:tmdbclient/src/model/item_model.dart';
 
 
-class MovieList extends StatelessWidget {
+class MovieList extends StatefulWidget {
+  @override
+  _MovieListState createState() => _MovieListState();
+}
+
+class _MovieListState extends State<MovieList> {
+
+  @override
+  void initState() {
+    bloc.fetchAllMovies();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    bloc.fetchAllMovies();
     return Scaffold(
       appBar: AppBar(
         title: Text('Discover Movies'),
@@ -27,32 +38,52 @@ class MovieList extends StatelessWidget {
     );
   }
 
+
+  @override
+  void dispose() {
+    bloc.dispose();
+    super.dispose();
+  }
+
   Widget _buildList(AsyncSnapshot<ItemModel> snapshot){
     ItemModel itemModel = snapshot.data;
     String url = "https://image.tmdb.org/t/p/w500";
 
-    return GridView.builder(
-        itemCount: itemModel.results.length,
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
-        itemBuilder: (context, index){
-          return Card(
-            color: Colors.white,
-            child: Column(
-              children: <Widget>[
-                Expanded(
-                  child: Image.network(url + "${itemModel.results[index].poster_path}",
-                  fit: BoxFit.fill,),
+    return ListView.builder(
+      itemCount: itemModel.results.length,
+      itemBuilder: (context, index){
+        String posterPath = itemModel.results[index].poster_path;
+        return Card(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Flexible(
+                  flex: 1,
+                  child: Container(
+                  child: Image.network(posterPath != null ? url + posterPath : "", fit: BoxFit.fitHeight,))),
+              Flexible(
+                flex: 2,
+                child: Container(
+                margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(itemModel.results[index].title, style: Theme.of(context).textTheme.title,),
+                    Divider(),
+                    Text(itemModel.results[index].overview, overflow: TextOverflow.ellipsis, maxLines: 4,),
+                    Divider(),
+                    Text("Release: " + itemModel.results[index].release_date),
+                    Text("%" + itemModel.results[index].popularity.toString()),
+
+
+
+                  ],
                 ),
-                Text(itemModel.results[index].title ,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  color: Colors.black,
-                ),),
-              ],
-            ),
-          );
-        }
+              ),)
+            ],
+          )
+        );
+      },
     );
   }
 }

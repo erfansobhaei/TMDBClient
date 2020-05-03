@@ -6,7 +6,7 @@ import 'package:tmdbclient/src/model/item_model.dart';
 class MovieApiProvider{
   final Client client = Client();
   static String _api_key = api_key;
-  final String url = "https://api.themoviedb.org/3/discover/movie?api_key=$_api_key";
+  final String url = "https://api.themoviedb.org/3/movie/upcoming?api_key=$_api_key";
 
   Future<ItemModel> fetchMovieList() async{
     final respnose = await client.get(url);
