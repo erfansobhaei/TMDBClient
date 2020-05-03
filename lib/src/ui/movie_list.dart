@@ -1,7 +1,9 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:tmdbclient/src/bloc/movie_bloc.dart';
 import 'package:tmdbclient/src/model/item_model.dart';
+import 'package:tmdbclient/src/ui/movie_detail.dart';
 
 
 class MovieList extends StatefulWidget {
@@ -53,37 +55,57 @@ class _MovieListState extends State<MovieList> {
       itemCount: itemModel.results.length,
       itemBuilder: (context, index){
         String posterPath = itemModel.results[index].poster_path;
-        return Card(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Flexible(
-                  flex: 1,
-                  child: Container(
-                  child: Image.network(posterPath != null ? url + posterPath : "", fit: BoxFit.fitHeight,))),
-              Flexible(
-                flex: 2,
-                child: Container(
-                margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(itemModel.results[index].title, style: Theme.of(context).textTheme.title,),
-                    Divider(),
-                    Text(itemModel.results[index].overview, overflow: TextOverflow.ellipsis, maxLines: 4,),
-                    Divider(),
-                    Text("Release: " + itemModel.results[index].release_date),
-                    Text("%" + itemModel.results[index].popularity.toString()),
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 8),
+          child: Card(
+            child: InkWell(
+              onTap: (){_openDetailPage(itemModel, index);},
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Flexible(
+                      flex: 1,
+                      child: Container(
+                      child: Image.network(posterPath != null ? url + posterPath : "", fit: BoxFit.cover,))),
+                  Flexible(
+                    flex: 2,
+                    child: Container(
+                    margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(itemModel.results[index].title, style: Theme.of(context).textTheme.title,),
+                        Divider(height: 8,),
+                        Text(itemModel.results[index].overview, overflow: TextOverflow.ellipsis, maxLines: 4,),
+                        SizedBox(height: 8,),
+                        Text("Release: " + itemModel.results[index].release_date),
+                        Text("%" + itemModel.results[index].popularity.toString()),
 
-
-
-                  ],
-                ),
-              ),)
-            ],
-          )
+                      ],
+                    ),
+                  ),)
+                ],
+              ),
+            )
+          ),
         );
       },
+    );
+  }
+
+  _openDetailPage(ItemModel data, int index) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) {
+        return MovieDetail(
+          title: data.results[index].title,
+          posterUrl: data.results[index].backdrop_path,
+          overview: data.results[index].overview,
+          releaseDate: data.results[index].release_date,
+          voteAverage: data.results[index].vote_average.toString(),
+          movieId: data.results[index].id,
+        );
+      }),
     );
   }
 }
