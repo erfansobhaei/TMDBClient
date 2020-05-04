@@ -94,18 +94,19 @@ class _MovieListState extends State<MovieList> {
   }
 
   _openDetailPage(ItemModel data, int index) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) {
-        return MovieDetail(
-          title: data.results[index].title,
-          posterUrl: data.results[index].backdrop_path,
-          overview: data.results[index].overview,
-          releaseDate: data.results[index].release_date,
-          voteAverage: data.results[index].vote_average.toString(),
-          movieId: data.results[index].id,
-        );
-      }),
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context){
+          return MovieDetail(
+            title: data.results[index].title,
+            posterUrl: data.results[index].backdrop_path,
+            overview: data.results[index].overview,
+            releaseDate: data.results[index].release_date,
+            voteAverage: data.results[index].vote_average.toString(),
+            movieId: data.results[index].id,
+          );
+        }
+      )
     );
   }
 }
