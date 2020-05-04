@@ -51,16 +51,16 @@ class MovieDetailState extends State<MovieDetail> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        top: false,
+        top: true,
         bottom: false,
         child: NestedScrollView(
           headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
             return <Widget>[
               SliverAppBar(
                 expandedHeight: 200.0,
-                floating: false,
-                pinned: true,
-                elevation: 0.0,
+                floating: true,
+                pinned: false,
+                elevation: 10.0,
                 flexibleSpace: FlexibleSpaceBar(
                     background: Image.network(
                       "https://image.tmdb.org/t/p/w500$posterUrl",
@@ -70,27 +70,27 @@ class MovieDetailState extends State<MovieDetail> {
             ];
           },
           body: Padding(
-            padding: const EdgeInsets.all(10.0),
+            padding: const EdgeInsets.all(16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Container(margin: EdgeInsets.only(top: 5.0)),
-                Text(
+                Container(margin: EdgeInsets.only(top: 5.0),
+                child: Text(
                   title,
                   style: TextStyle(
                     fontSize: 25.0,
                     fontWeight: FontWeight.bold,
                   ),
-                ),
-                Container(margin: EdgeInsets.only(top: 8.0, bottom: 8.0)),
+                ),),
+                SizedBox(height: 16,),
                 Row(
                   children: <Widget>[
                     Icon(
                       Icons.favorite,
                       color: Colors.red,
                     ),
-                    Container(
-                      margin: EdgeInsets.only(left: 1.0, right: 1.0),
+                    SizedBox(
+                      width: 4,
                     ),
                     Text(
                       voteAverage,
@@ -98,9 +98,13 @@ class MovieDetailState extends State<MovieDetail> {
                         fontSize: 18.0,
                       ),
                     ),
-                    Container(
-                      margin: EdgeInsets.only(left: 10.0, right: 10.0),
+                    SizedBox(width: 20,),
+                    Icon(
+                      Icons.calendar_today,
+                      color: Colors.white,
+                      size: 22,
                     ),
+                    SizedBox(width: 4,),
                     Text(
                       releaseDate,
                       style: TextStyle(
@@ -109,7 +113,7 @@ class MovieDetailState extends State<MovieDetail> {
                     ),
                   ],
                 ),
-                Container(margin: EdgeInsets.only(top: 8.0, bottom: 8.0)),
+                SizedBox(height: 20,),
                 Text(description),
               ],
             ),
