@@ -2,6 +2,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:tmdbclient/src/bloc/movie_bloc.dart';
+import 'package:tmdbclient/src/bloc/movie_detail_bloc.dart';
+import 'package:tmdbclient/src/bloc/movie_detail_bloc_provider.dart';
 import 'package:tmdbclient/src/model/item_model.dart';
 import 'package:tmdbclient/src/ui/movie_detail.dart';
 
@@ -97,13 +99,15 @@ class _MovieListState extends State<MovieList> {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context){
-          return MovieDetail(
-            title: data.results[index].title,
-            posterUrl: data.results[index].backdrop_path,
-            overview: data.results[index].overview,
-            releaseDate: data.results[index].release_date,
-            voteAverage: data.results[index].vote_average.toString(),
-            movieId: data.results[index].id,
+          return MovieDetailBlocProvider(
+            child: MovieDetail(
+              title: data.results[index].title,
+              posterUrl: data.results[index].backdrop_path,
+              overview: data.results[index].overview,
+              releaseDate: data.results[index].release_date,
+              voteAverage: data.results[index].vote_average.toString(),
+              movieId: data.results[index].id,
+            ),
           );
         }
       )

@@ -12,7 +12,7 @@ class MovieDetailBloc extends Bloc {
 
   Function(int) get fetchTrailerById => _movieId.sink.add;
 
-  Stream<Future<TrailerModel>> get movieTrailer => _trailers.stream;
+  Stream<Future<TrailerModel>> get trailerStream => _trailers.stream;
 
   MovieDetailBloc() {
     _movieId.stream.transform(_itemTransformer()).pipe(_trailers);
