@@ -9,8 +9,10 @@ class MovieDetailBlocProvider extends InheritedWidget {
         super(key: key, child: child);
 
   static MovieDetailBloc of(BuildContext context) {
-    return (context.inheritFromWidgetOfExactType(
-        MovieDetailBlocProvider) as MovieDetailBlocProvider).bloc;
+    // ignore: deprecated_member_use
+    return (context.inheritFromWidgetOfExactType(MovieDetailBlocProvider)
+            as MovieDetailBlocProvider)
+        .bloc;
   }
 
   @override

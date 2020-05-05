@@ -1,13 +1,13 @@
 class ItemModel {
   int _page;
-  int _total_results;
-  int _total_pages;
+  int _totalResults;
+  int _totalPages;
   List<_Result> _results = [];
 
   ItemModel.fromJson(Map<String, dynamic> parsedJson) {
     _page = parsedJson['page'];
-    _total_results = parsedJson['total_results'];
-    _total_pages = parsedJson['total_pages'];
+    _totalResults = parsedJson['total_results'];
+    _totalPages = parsedJson['total_pages'];
     List<_Result> temp = [];
     for (int i = 0; i < parsedJson['results'].length; i++) {
       _Result _result = _Result(parsedJson['results'][i]);
@@ -18,73 +18,73 @@ class ItemModel {
 
   List<_Result> get results => _results;
 
-  int get total_pages => _total_pages;
+  int get totalPages => _totalPages;
 
-  int get total_results => _total_results;
+  int get totalResults => _totalResults;
 
   int get page => _page;
 }
 
 class _Result {
-  int _vote_count;
+  int _voteCount;
   int _id;
   bool _video;
-  var _vote_average;
+  var _voteAverage;
   String _title;
   double _popularity;
-  String _poster_path;
-  String _original_language;
-  String _original_title;
-  List<int> _genre_ids = [];
-  String _backdrop_path;
+  String _posterPath;
+  String _originalLanguage;
+  String _originalTitle;
+  List<int> _genreIds = [];
+  String _backdropPath;
   bool _adult;
   String _overview;
-  String _release_date;
+  String _releaseDate;
 
   _Result(result) {
-    _vote_count = result['vote_count'];
+    _voteCount = result['vote_count'];
     _id = result['id'];
     _video = result['video'];
-    _vote_average = result['vote_average'];
+    _voteAverage = result['vote_average'];
     _title = result['title'];
     _popularity = result['popularity'];
-    _poster_path = result['poster_path'];
-    _original_language = result['original_language'];
-    _original_title = result['original_title'];
+    _posterPath = result['poster_path'];
+    _originalLanguage = result['original_language'];
+    _originalTitle = result['original_title'];
     for (int i = 0; i < result['genre_ids'].length; i++) {
-      _genre_ids.add(result['genre_ids'][i]);
+      _genreIds.add(result['genre_ids'][i]);
     }
-    _backdrop_path = result['backdrop_path'];
+    _backdropPath = result['backdrop_path'];
     _adult = result['adult'];
     _overview = result['overview'];
-    _release_date = result['release_date'];
+    _releaseDate = result['release_date'];
   }
 
-  String get release_date => _release_date;
+  String get releaseDate => _releaseDate;
 
   String get overview => _overview;
 
   bool get adult => _adult;
 
-  String get backdrop_path => _backdrop_path;
+  String get backdropPath => _backdropPath;
 
-  List<int> get genre_ids => _genre_ids;
+  List<int> get genreIds => _genreIds;
 
-  String get original_title => _original_title;
+  String get originalTitle => _originalTitle;
 
-  String get original_language => _original_language;
+  String get originalLanguage => _originalLanguage;
 
-  String get poster_path => _poster_path;
+  String get posterPath => _posterPath;
 
   double get popularity => _popularity;
 
   String get title => _title;
 
-  get vote_average => _vote_average;
+  get voteAverage => _voteAverage;
 
   bool get video => _video;
 
   int get id => _id;
 
-  int get vote_count => _vote_count;
+  int get voteCount => _voteCount;
 }

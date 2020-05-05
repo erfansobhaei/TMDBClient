@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tmdbclient/src/bloc/movie_detail_bloc.dart';
 import 'package:tmdbclient/src/bloc/movie_detail_bloc_provider.dart';
 import 'package:tmdbclient/src/model/trailer_model.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class MovieDetail extends StatefulWidget {
   final posterUrl;
@@ -41,6 +42,7 @@ class MovieDetailState extends State<MovieDetail> {
   final String voteAverage;
   final int movieId;
   MovieDetailBloc bloc;
+  YoutubePlayerController controller;
 
   MovieDetailState({
     this.title,
@@ -102,7 +104,7 @@ class MovieDetailState extends State<MovieDetail> {
                       width: 4,
                     ),
                     Text(
-                      voteAverage,
+                      releaseDate,
                       style: TextStyle(
                         fontSize: 18.0,
                       ),
@@ -151,12 +153,15 @@ class MovieDetailState extends State<MovieDetail> {
                             (context, AsyncSnapshot<TrailerModel> snapshot) {
                           if (snapshot.hasData) {
                             if (snapshot.data.results.length > 0) {
-                              return _tarilerLayout(snapshot.data);
+                              return _trailerLayout(snapshot.data);
                             } else {
                               return _noTrailerLayout();
                             }
                           } else {
-                            return Center(child: CircularProgressIndicator());
+                            return Center(
+                                child: CircularProgressIndicator(
+                              backgroundColor: Colors.red,
+                            ));
                           }
                         },
                       );
@@ -179,48 +184,59 @@ class MovieDetailState extends State<MovieDetail> {
     super.dispose();
   }
 
-  Widget _tarilerLayout(TrailerModel data) {
-    if (data.results.length > 1) {
-      return Row(
-        children: <Widget>[
-          _trailerItem(data, 0),
-          _trailerItem(data, 1),
-        ],
-      );
-    } else {
-      return Row(
-        children: <Widget>[
-          _trailerItem(data, 0),
-        ],
-      );
-    }
-  }
-
   Widget _noTrailerLayout() {
     return Center(
-      child: Container(
-        child: Text("No trailer available"),
-      ),
+      child: Text("No trailers"),
     );
   }
 
-  _trailerItem(TrailerModel data, int index) {
+  Widget _trailerLayout(TrailerModel data) {
     return Expanded(
-      child: Column(
-        children: <Widget>[
-          Container(
-            margin: EdgeInsets.all(5.0),
-            height: 100.0,
-            color: Colors.grey,
-            child: Center(child: Icon(Icons.play_circle_filled)),
+        child: ListView.builder(
+      itemCount: data.results.length,
+      itemBuilder: (context, index) {
+        Result result = data.results[index];
+        return Card(
+          child: Container(
+            padding: EdgeInsets.all(8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                Text(result.name),
+                SizedBox(
+                  height: 5,
+                ),
+                Stack(
+                  alignment: Alignment.center,
+                  children: <Widget>[
+                    Image.network(
+                        "https://img.youtube.com/vi/${result.key}/sddefault.jpg"),
+                    GestureDetector(
+                      child: Image.asset("images/play_button.png"),
+                      onTap: () {
+                        Scaffold.of(context).showSnackBar(SnackBar(
+                          content: Text("${result.name} is playing..."),
+                          duration: Duration(milliseconds: 500),
+                        ));
+                      },
+                    ),
+                  ],
+                )
+              ],
+            ),
           ),
-          Text(
-            data.results[index].name,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ],
-      ),
-    );
+        );
+      },
+    ));
   }
+
+/*List<Widget> _trailerList(List<Result> results) {
+    List<Widget> trailers = List();
+    for (Result r in results) {
+      trailers.add(
+
+      );
+    }
+    return trailers;
+  }*/
 }
