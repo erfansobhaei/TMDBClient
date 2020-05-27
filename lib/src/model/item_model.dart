@@ -16,6 +16,12 @@ class ItemModel {
     _results = temp;
   }
 
+  void addItems(ItemModel newItems){
+    for(_Result r in newItems._results){
+      _results.add(r);
+    }
+  }
+
   List<_Result> get results => _results;
 
   int get totalPages => _totalPages;
@@ -47,7 +53,7 @@ class _Result {
     _video = result['video'];
     _voteAverage = result['vote_average'];
     _title = result['title'];
-    _popularity = result['popularity'];
+    _popularity = result['popularity'].toDouble();
     _posterPath = result['poster_path'];
     _originalLanguage = result['original_language'];
     _originalTitle = result['original_title'];

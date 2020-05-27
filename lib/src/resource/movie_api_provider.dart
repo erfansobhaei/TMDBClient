@@ -10,8 +10,8 @@ class MovieApiProvider {
   static String _apiKey = api_key;
   final String _baseUrl = "https://api.themoviedb.org/3/movie/";
 
-  Future<ItemModel> fetchMovieList() async {
-    final response = await client.get(_baseUrl + "upcoming?api_key=$_apiKey");
+  Future<ItemModel> fetchMovieList(int pageIndex) async {
+    final response = await client.get(_baseUrl + "now_playing?api_key=$_apiKey&page=$pageIndex");
 
     if (response.statusCode == 200) {
       return ItemModel.fromJson(json.decode(response.body));

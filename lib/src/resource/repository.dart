@@ -5,7 +5,7 @@ import 'package:tmdbclient/src/resource/movie_api_provider.dart';
 class Repository {
   final MovieApiProvider provider = MovieApiProvider();
 
-  Future<ItemModel> fetchAllMovies() => provider.fetchMovieList();
+  Future<ItemModel> fetchAllMovies(int pageIndex) => provider.fetchMovieList(pageIndex);
 
   Future<TrailerModel> fetchTrailer(int movieId) =>
       provider.fetchTrailer(movieId);

@@ -11,10 +11,12 @@ class MovieList extends StatefulWidget {
 }
 
 class _MovieListState extends State<MovieList> {
+  int pageIndex = 1;
+
   @override
   void initState() {
-    bloc.fetchAllMovies();
     super.initState();
+    bloc.fetchAllMovies(pageIndex);
   }
 
   @override
@@ -44,66 +46,85 @@ class _MovieListState extends State<MovieList> {
   }
 
   Widget _buildList(AsyncSnapshot<ItemModel> snapshot) {
+    bool isLoading = false;
+    ScrollController _scrollController = ScrollController();
+    _scrollController.addListener(() {
+      if (_scrollController.position.maxScrollExtent ==
+          _scrollController.position.pixels) {
+        if (!isLoading) {
+          isLoading = !isLoading;
+          pageIndex++;
+          print("go to $pageIndex");
+          bloc.fetchAllMovies(pageIndex);
+          //perform event
+        }
+      }
+    });
     ItemModel itemModel = snapshot.data;
     String url = "https://image.tmdb.org/t/p/w500";
 
     return ListView.builder(
+      controller: _scrollController,
       itemCount: itemModel.results.length,
       itemBuilder: (context, index) {
         String posterPath = itemModel.results[index].posterPath;
-        return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 8),
-          child: Card(
-              child: InkWell(
-            onTap: () {
-              _openDetailPage(itemModel, index);
-            },
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Flexible(
-                    flex: 1,
+        if (isLoading) {
+          return Center(child: CircularProgressIndicator());
+        } else {
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 8),
+            child: Card(
+                child: InkWell(
+              onTap: () {
+                _openDetailPage(itemModel, index);
+              },
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Flexible(
+                      flex: 1,
+                      child: Container(
+                          child: Image.network(
+                        posterPath != null ? url + posterPath : "",
+                        fit: BoxFit.cover,
+                      ))),
+                  Flexible(
+                    flex: 2,
                     child: Container(
-                        child: Image.network(
-                      posterPath != null ? url + posterPath : "",
-                      fit: BoxFit.cover,
-                    ))),
-                Flexible(
-                  flex: 2,
-                  child: Container(
-                    margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          itemModel.results[index].title,
-                          style: Theme.of(context).textTheme.title,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        Divider(
-                          height: 8,
-                        ),
-                        Text(
-                          itemModel.results[index].overview,
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 4,
-                        ),
-                        SizedBox(
-                          height: 8,
-                        ),
-                        Text(
-                            "Release: " + itemModel.results[index].releaseDate),
-                        Text("%" +
-                            itemModel.results[index].popularity.toString()),
-                      ],
+                      margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            itemModel.results[index].title,
+                            style: Theme.of(context).textTheme.title,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          Divider(
+                            height: 8,
+                          ),
+                          Text(
+                            itemModel.results[index].overview,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 4,
+                          ),
+                          SizedBox(
+                            height: 8,
+                          ),
+                          Text("Release: " +
+                              itemModel.results[index].releaseDate),
+                          Text("%" +
+                              itemModel.results[index].popularity.toString()),
+                        ],
+                      ),
                     ),
-                  ),
-                )
-              ],
-            ),
-          )),
-        );
+                  )
+                ],
+              ),
+            )),
+          );
+        }
       },
     );
   }

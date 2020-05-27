@@ -6,12 +6,18 @@ import 'package:tmdbclient/src/resource/repository.dart';
 class MovieBloc extends Bloc {
   Repository _repository = Repository();
   PublishSubject _movieStreamController = PublishSubject<ItemModel>();
+  ItemModel allItems;
 
   Stream<ItemModel> get movieStream => _movieStreamController.stream;
 
-  fetchAllMovies() async {
-    ItemModel itemModel = await _repository.fetchAllMovies();
-    _movieStreamController.sink.add(itemModel);
+  fetchAllMovies(int pageIndex) async {
+    if (allItems == null) {
+      allItems = await _repository.fetchAllMovies(1);
+    } else {
+      ItemModel itemModel = await _repository.fetchAllMovies(pageIndex);
+      allItems.addItems(itemModel);
+    }
+    _movieStreamController.sink.add(allItems);
   }
 
   @override

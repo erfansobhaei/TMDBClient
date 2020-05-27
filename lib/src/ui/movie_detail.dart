@@ -240,12 +240,18 @@ class MovieDetailState extends State<MovieDetail> {
                               context: context,
                               builder: (_){
                                 return Dialog(
-                                  child: YoutubePlayer(
-                                    thumbnailUrl: "https://img.youtube.com/vi/${result.key}/sddefault.jpg",
-                                    bottomActions: <Widget>[
-                                    ],
-                                    controller: controller,
-                                    showVideoProgressIndicator: true,
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+                                  backgroundColor: Colors.grey,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(6.0),
+                                    child: YoutubePlayer(
+                                      thumbnailUrl: "https://img.youtube.com/vi/${result.key}/sddefault.jpg",
+                                      bottomActions: <Widget>[
+                                      ],
+                                      showVideoProgressIndicator: true,
+                                      controller: controller,
+
+                                    ),
                                   ),
                                 );
                               }
