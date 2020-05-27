@@ -84,9 +84,9 @@ class MovieDetailState extends State<MovieDetail> {
               ),
             ];
           },
-          body: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: SingleChildScrollView(
+          body: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -108,7 +108,7 @@ class MovieDetailState extends State<MovieDetail> {
                         width: 4,
                       ),
                       Text(
-                        releaseDate,
+                        voteAverage.toString(),
                         style: TextStyle(
                           fontSize: 18.0,
                         ),
@@ -204,13 +204,22 @@ class MovieDetailState extends State<MovieDetail> {
       itemCount: data.results.length,
       itemBuilder: (context, index) {
         Result result = data.results[index];
+        YoutubePlayerController controller = YoutubePlayerController(
+          initialVideoId: result.key,
+          flags: YoutubePlayerFlags(
+            autoPlay: true,
+            mute: false,
+          ),
+        );
         return Card(
           child: Container(
+            width: MediaQuery.of(context).size.width * (3/4),
             padding: EdgeInsets.all(8),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Text(result.name),
+                Text(result.name,
+                overflow: TextOverflow.ellipsis,),
                 SizedBox(
                   height: 5,
                 ),
@@ -220,16 +229,27 @@ class MovieDetailState extends State<MovieDetail> {
                     children: <Widget>[
                       SizedBox(
                         height:MediaQuery.of(context).size.height / 4,
+                        width: MediaQuery.of(context).size.width,
                         child: Image.network(
                             "https://img.youtube.com/vi/${result.key}/sddefault.jpg"),
                       ),
                       GestureDetector(
                         child: Image.asset("images/play_button.png"),
-                        onTap: () {
-                          Scaffold.of(context).showSnackBar(SnackBar(
-                            content: Text("${result.name} is playing..."),
-                            duration: Duration(milliseconds: 500),
-                          ));
+                        onTap: () async {
+                          await showDialog(
+                              context: context,
+                              builder: (_){
+                                return Dialog(
+                                  child: YoutubePlayer(
+                                    thumbnailUrl: "https://img.youtube.com/vi/${result.key}/sddefault.jpg",
+                                    bottomActions: <Widget>[
+                                    ],
+                                    controller: controller,
+                                    showVideoProgressIndicator: true,
+                                  ),
+                                );
+                              }
+                          );
                         },
                       ),
                     ],
@@ -242,14 +262,4 @@ class MovieDetailState extends State<MovieDetail> {
       },
     );
   }
-
-/*List<Widget> _trailerList(List<Result> results) {
-    List<Widget> trailers = List();
-    for (Result r in results) {
-      trailers.add(
-
-      );
-    }
-    return trailers;
-  }*/
 }
