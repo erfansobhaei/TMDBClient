@@ -33,7 +33,7 @@ class MovieApiProvider {
 
   Future<CastModel> fetchCastList(int movieId) async {
     final response = await client.get(_baseUrl + "$movieId/credits?api_key=$_apiKey");
-
+    print(_baseUrl + "$movieId/credits?api_key=$_apiKey");
 
     if(response.statusCode == 200){
       return CastModel.fromJson(json.decode(response.body));

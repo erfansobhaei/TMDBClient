@@ -99,7 +99,8 @@ class MovieDetailState extends State<MovieDetail> {
                 children: <Widget>[
                   Container(
                     margin: EdgeInsets.only(top: 5.0),
-                    child: Text(title, style: Theme.of(context).textTheme.title),
+                    child:
+                        Text(title, style: Theme.of(context).textTheme.title),
                   ),
                   SizedBox(
                     height: 16,
@@ -154,8 +155,8 @@ class MovieDetailState extends State<MovieDetail> {
                   ),
                   StreamBuilder(
                     stream: movieBloc.trailerStream,
-                    builder:
-                        (context, AsyncSnapshot<Future<TrailerModel>> snapshot) {
+                    builder: (context,
+                        AsyncSnapshot<Future<TrailerModel>> snapshot) {
                       if (snapshot.hasData) {
                         return FutureBuilder(
                           future: snapshot.data,
@@ -164,7 +165,7 @@ class MovieDetailState extends State<MovieDetail> {
                             if (snapshot.hasData) {
                               if (snapshot.data.results.length > 0) {
                                 return SizedBox(
-                                  height: 250,
+                                    height: 250,
                                     child: _trailerLayout(snapshot.data));
                               } else {
                                 return _noTrailerLayout();
@@ -194,17 +195,19 @@ class MovieDetailState extends State<MovieDetail> {
                   ),
                   StreamBuilder(
                     stream: castListBloc.castStream,
-                    builder: (context, AsyncSnapshot<CastModel> snapshot){
-                      if(snapshot.hasData){
+                    builder: (context, AsyncSnapshot<CastModel> snapshot) {
+                      if (snapshot.hasData) {
                         return SizedBox(
-                            height: 250,
-                            child: _buildCastList(snapshot.data));
-                      } else if(snapshot.hasError){
+                            height: 250, child: _buildCastList(snapshot.data));
+                      } else if (snapshot.hasError) {
                         print("there");
-                        return Center(child: Text(snapshot.error.toString()),);
+                        return Center(
+                          child: Text(snapshot.error.toString()),
+                        );
                       }
-                      return Center(child: CircularProgressIndicator(),);
-
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
                     },
                   ),
                 ],
@@ -244,13 +247,15 @@ class MovieDetailState extends State<MovieDetail> {
         );
         return Card(
           child: Container(
-            width: MediaQuery.of(context).size.width * (3/4),
+            width: MediaQuery.of(context).size.width * (3 / 4),
             padding: EdgeInsets.all(8),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Text(result.name,
-                overflow: TextOverflow.ellipsis,),
+                Text(
+                  result.name,
+                  overflow: TextOverflow.ellipsis,
+                ),
                 SizedBox(
                   height: 5,
                 ),
@@ -259,7 +264,7 @@ class MovieDetailState extends State<MovieDetail> {
                     alignment: Alignment.center,
                     children: <Widget>[
                       SizedBox(
-                        height:MediaQuery.of(context).size.height / 4,
+                        height: MediaQuery.of(context).size.height / 4,
                         width: MediaQuery.of(context).size.width,
                         child: Image.network(
                             "https://img.youtube.com/vi/${result.key}/sddefault.jpg"),
@@ -269,24 +274,24 @@ class MovieDetailState extends State<MovieDetail> {
                         onTap: () async {
                           await showDialog(
                               context: context,
-                              builder: (_){
+                              builder: (_) {
                                 return Dialog(
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(12.0)),
                                   backgroundColor: Colors.grey,
                                   child: Padding(
                                     padding: const EdgeInsets.all(6.0),
                                     child: YoutubePlayer(
-                                      thumbnailUrl: "https://img.youtube.com/vi/${result.key}/sddefault.jpg",
-                                      bottomActions: <Widget>[
-                                      ],
+                                      thumbnailUrl:
+                                          "https://img.youtube.com/vi/${result.key}/sddefault.jpg",
+                                      bottomActions: <Widget>[],
                                       showVideoProgressIndicator: true,
                                       controller: controller,
-
                                     ),
                                   ),
                                 );
-                              }
-                          );
+                              });
                         },
                       ),
                     ],
@@ -301,5 +306,36 @@ class MovieDetailState extends State<MovieDetail> {
   }
 
   Widget _buildCastList(CastModel data) {
-
+    String url = "https://image.tmdb.org/t/p/original";
+    return ListView.builder(
+      scrollDirection: Axis.horizontal,
+      shrinkWrap: true,
+      itemCount: data.cast.length,
+      itemBuilder: (context, index) {
+        print(MediaQuery.of(context).size.width / 2);
+        return Card(
+          child: Container(
+            width: MediaQuery.of(context).size.width/ 2.5,
+            padding: EdgeInsets.all( 8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Expanded(
+                  child: data.cast[index].profile_path != null ? CachedNetworkImage(
+                    fit: BoxFit.fitWidth,
+                    imageUrl: url + data.cast[index].profile_path ,
+                    placeholder: (context, url) => Center(child: CircularProgressIndicator()),
+                    errorWidget: (context, url, error) =>  Icon(Icons.error),
+                  ):
+                  Icon(Icons.person, size: 128,),
+                ),
+                Text(data.cast[index].name, overflow: TextOverflow.fade,softWrap: true, textAlign: TextAlign.center,),
+                Text(data.cast[index].character, overflow: TextOverflow.ellipsis, textAlign: TextAlign.center,),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
+}
