@@ -313,25 +313,30 @@ class MovieDetailState extends State<MovieDetail> {
       itemCount: data.cast.length,
       itemBuilder: (context, index) {
         print(MediaQuery.of(context).size.width / 2);
-        return Card(
-          child: Container(
-            width: MediaQuery.of(context).size.width/ 2.5,
-            padding: EdgeInsets.all( 8),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Expanded(
-                  child: data.cast[index].profile_path != null ? CachedNetworkImage(
-                    fit: BoxFit.fitWidth,
-                    imageUrl: url + data.cast[index].profile_path ,
-                    placeholder: (context, url) => Center(child: CircularProgressIndicator()),
-                    errorWidget: (context, url, error) =>  Icon(Icons.error),
-                  ):
-                  Icon(Icons.person, size: 128,),
+        return Material(
+          child: Card(
+            child: InkWell(
+              onTap: (){},
+              child: Container(
+                width: MediaQuery.of(context).size.width/ 2.5,
+                padding: EdgeInsets.all( 8),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Expanded(
+                      child: data.cast[index].profile_path != null ? CachedNetworkImage(
+                        fit: BoxFit.fitWidth,
+                        imageUrl: url + data.cast[index].profile_path ,
+                        placeholder: (context, url) => Center(child: CircularProgressIndicator()),
+                        errorWidget: (context, url, error) =>  Icon(Icons.error),
+                      ):
+                      Icon(Icons.person, size: 128,),
+                    ),
+                    Text(data.cast[index].name, overflow: TextOverflow.fade,softWrap: true, textAlign: TextAlign.center,),
+                    Text(data.cast[index].character, overflow: TextOverflow.ellipsis, textAlign: TextAlign.center,),
+                  ],
                 ),
-                Text(data.cast[index].name, overflow: TextOverflow.fade,softWrap: true, textAlign: TextAlign.center,),
-                Text(data.cast[index].character, overflow: TextOverflow.ellipsis, textAlign: TextAlign.center,),
-              ],
+              ),
             ),
           ),
         );
