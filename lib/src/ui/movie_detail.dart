@@ -1,8 +1,11 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:tmdbclient/src/bloc/cast_list_bloc.dart';
 import 'package:tmdbclient/src/bloc/movie_detail_bloc.dart';
 import 'package:tmdbclient/src/bloc/movie_detail_bloc_provider.dart';
+import 'package:tmdbclient/src/model/cast_model.dart';
 import 'package:tmdbclient/src/model/trailer_model.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
@@ -43,7 +46,8 @@ class MovieDetailState extends State<MovieDetail> {
   final String title;
   final String voteAverage;
   final int movieId;
-  MovieDetailBloc bloc;
+  MovieDetailBloc movieBloc;
+  CastListBloc castListBloc;
   YoutubePlayerController controller;
 
   MovieDetailState({
@@ -57,8 +61,10 @@ class MovieDetailState extends State<MovieDetail> {
 
   @override
   void didChangeDependencies() {
-    bloc = MovieDetailBlocProvider.of(context);
-    bloc.fetchTrailerById(movieId);
+    movieBloc = MovieDetailBlocProvider.of(context);
+    movieBloc.fetchTrailerById(movieId);
+    castListBloc = CastListBloc(movieId);
+    castListBloc.fetchCastList();
     super.didChangeDependencies();
   }
 
@@ -147,7 +153,7 @@ class MovieDetailState extends State<MovieDetail> {
                     height: 10,
                   ),
                   StreamBuilder(
-                    stream: bloc.trailerStream,
+                    stream: movieBloc.trailerStream,
                     builder:
                         (context, AsyncSnapshot<Future<TrailerModel>> snapshot) {
                       if (snapshot.hasData) {
@@ -176,6 +182,31 @@ class MovieDetailState extends State<MovieDetail> {
                       }
                     },
                   ),
+                  Divider(
+                    height: 40,
+                  ),
+                  Text(
+                    "Cast",
+                    style: Theme.of(context).textTheme.headline,
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  StreamBuilder(
+                    stream: castListBloc.castStream,
+                    builder: (context, AsyncSnapshot<CastModel> snapshot){
+                      if(snapshot.hasData){
+                        return SizedBox(
+                            height: 250,
+                            child: _buildCastList(snapshot.data));
+                      } else if(snapshot.hasError){
+                        print("there");
+                        return Center(child: Text(snapshot.error.toString()),);
+                      }
+                      return Center(child: CircularProgressIndicator(),);
+
+                    },
+                  ),
                 ],
               ),
             ),
@@ -187,7 +218,7 @@ class MovieDetailState extends State<MovieDetail> {
 
   @override
   void dispose() {
-    bloc.dispose();
+    movieBloc.dispose();
     super.dispose();
   }
 
@@ -268,4 +299,7 @@ class MovieDetailState extends State<MovieDetail> {
       },
     );
   }
-}
+
+  Widget _buildCastList(CastModel data) {
+
+  }

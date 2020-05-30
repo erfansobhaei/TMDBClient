@@ -3,7 +3,7 @@ import 'package:tmdbclient/src/bloc/bloc.dart';
 import 'package:tmdbclient/src/model/item_model.dart';
 import 'package:tmdbclient/src/resource/repository.dart';
 
-class MovieBloc extends Bloc {
+class MovieListBloc extends Bloc {
   Repository _repository = Repository();
   PublishSubject _movieStreamController = PublishSubject<ItemModel>();
   ItemModel allItems;
@@ -26,4 +26,4 @@ class MovieBloc extends Bloc {
   }
 }
 
-final bloc = MovieBloc();
+final bloc = MovieListBloc();

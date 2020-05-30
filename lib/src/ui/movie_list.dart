@@ -1,6 +1,7 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:tmdbclient/src/bloc/movie_bloc.dart';
+import 'package:tmdbclient/src/bloc/movie_list_bloc.dart';
 import 'package:tmdbclient/src/bloc/movie_detail_bloc_provider.dart';
 import 'package:tmdbclient/src/model/item_model.dart';
 import 'package:tmdbclient/src/ui/movie_detail.dart';
@@ -79,15 +80,16 @@ class _MovieListState extends State<MovieList> {
                 _openDetailPage(itemModel, index);
               },
               child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   Flexible(
                       flex: 1,
                       child: Container(
-                          child: Image.network(
-                        posterPath != null ? url + posterPath : "",
-                        fit: BoxFit.cover,
-                      ))),
+                          child: CachedNetworkImage(
+                            imageUrl: url + posterPath,
+                            placeholder: (context, url) => Center(child: CircularProgressIndicator()),
+                            errorWidget: (context, url, error) =>  Icon(Icons.error),
+                          ),)),
                   Flexible(
                     flex: 2,
                     child: Container(
